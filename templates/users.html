@@ -7,25 +7,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="{{url_for('static', filename='showModal.js')}}"></script>
+  <link rel="stylesheet" href="../static/styleList.css">
   <title>Document</title>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #414447;
-    }
-
-    .box {
-      display: flex;
-    }
-  </style>
 </head>
 
 <body>
+  <header>
+    <nav>
+      <h1 class="title">CRUD-FLASK</h1>
+      <ul class="headerBts">
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/list">Usuários</a>
+        </li>
+        <li>
+          <a href="https://github.com/imbard">Github</a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/talison-brendon/">Sobre</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
   <div class="box">
+
+    {% if len == 0 %}
+    <div class="noUsers">
+      <h3 class="h3">Nenhum usuário cadastrado</h3>
+      <a href="/">Criar um novo usuário</a>
+    </div>
+
+    {% else %}
     <table class="table table-dark table-hover rounded rounded-4 overflow-hidden">
       <thead>
         <th class="p-3">Nome</th>
@@ -40,20 +56,50 @@
           <td class="p-3">{{user.age}}</td>
           <td class="p-3">{{user.email}}</td>
           <td class="gap-3">
-            <form action="" method="get">
-              <button type="submit" class="btn btn-success">Editar</button>
-            </form>
-
-            <form action="/delete/{{user.email}}" method="post">
-              <button type="submit" class="btn btn-danger">Apagar</button>
-            </form>
+            <button type="button" onclick="openModal('{{user.nome}}', '{{user.age}}', '{{user.email}}')"
+              class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              data-bs-whatever="{{user.nome}}" id="buttonModal">Editar</button>
+            <a href="/delete/{{user.email}}" class="btn btn-danger">Apagar</a>
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formUpdate" action="/update" method="post">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Nome</label>
+              <input required type="text" class="form-control" name="name" id="name">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Idade</label>
+              <input type="text" class="form-control" name="age" id="age">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Email</label>
+              <input required type="email" class="form-control" name="email" id="email">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" form="formUpdate" class="btn btn-primary">Atualizar</button>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
